@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pro Car Rental Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b6ef6;--blue-2:#2b8efb;--muted:#6b7280;--bg:#f6fbff;--card:#fff}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Arial;margin:0;background:linear-gradient(180deg,var(--bg),#ffffff);color:#222}
+    header{background:linear-gradient(90deg,var(--blue),var(--blue-2));color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+    header .brand{display:flex;gap:14px;align-items:center}
+    .logo{background:#fff;color:var(--blue);font-weight:800;padding:8px 12px;border-radius:10px}
+    nav{background:#fff;padding:10px 20px;border-bottom:1px solid #e7eefb}
+    nav .menu{display:flex;gap:8px;flex-wrap:wrap}
+    button.tab{background:#fff;border:1px solid #e6eefb;padding:8px 14px;border-radius:8px;color:var(--blue);cursor:pointer;font-weight:600}
+    button.tab.active{background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(11,110,246,0.14)}
+    main{max-width:1100px;margin:22px auto;padding:0 18px}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
+    .card{background:var(--card);padding:18px;border-radius:12px;border:1px solid #eef6ff;box-shadow:0 6px 18px rgba(15,35,80,0.03)}
+    h1,h2{margin:0}
+    .hero{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .hero .left{max-width:640px}
+    .hero h1{font-size:28px}
+    .hero p{color:var(--muted);margin-top:8px}
+    .cta{margin-top:14px}
+    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--blue);color:#fff}
+    .small{font-size:13px;color:var(--muted)}
+    form label{display:block;margin-top:10px;font-weight:600}
+    input[type=text],input[type=password],input[type=email],input[type=tel],select,input[type=date],input[type=number]{width:100%;padding:10px;border:1px solid #d6e3fb;border-radius:8px;margin-top:6px}
+    .row{display:flex;gap:10px}
+    .row > *{flex:1}
+    .results .item{padding:12px;border-radius:8px;border:1px solid #eef6ff;margin-bottom:10px}
+    .muted{color:var(--muted)}
+    .right-rail .section{margin-bottom:12px}
+    .photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+    .photos-grid img{width:100%;height:70px;object-fit:cover;border-radius:6px;border:1px solid #e6eefb}
+    .notice{background:#fff5f2;border:1px solid #ffd6cc;padding:10px;border-radius:8px;color:#66391c}
+    footer{max-width:1100px;margin:22px auto;padding:10px 18px;color:var(--muted);font-size:13px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">TCH</div>
+      <div>
+        <div style="font-weight:800">Tidy Car Hire — Pro</div>
+        <div class="small">Professional fleet & booking management</div>
+      </div>
+    </div>
+    <div class="small">Logged in as <strong id="userName">Admin</strong></div>
+  </header>
+  <nav>
+    <div class="menu">
+      <button class="tab active" data-page="home">Home</button>
+      <button class="tab" data-page="search">Search</button>
+      <button class="tab" data-page="login">Login</button>
+      <button class="tab" data-page="profile">Customer Profile</button>
+      <button class="tab" data-page="booking">New Booking</button>
+      <button class="tab" data-page="vehicle">Vehicle Profile</button>
+      <button class="tab" data-page="add">Add / Admin</button>
+      <button class="tab" data-page="checkin">Check-In</button>
+      <button class="tab" data-page="checkout">Check-Out</button>
+      <button class="tab" data-page="reports">Reports</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HOME -->
+    <section id="home" class="card" style="display:block">
+      <div class="hero">
+        <div class="left">
+          <h1>Professional Car Rental Management</h1>
+          <p class="muted">Manage fleet, bookings, check-ins/outs, tickets, maintenance and customer records — all from this panel. Photos and video evidence required for handovers.</p>
+          <div class="cta">
+            <button class="btn primary" onclick="showPage('booking')">Get Started — New Booking</button>
+            <button class="btn" onclick="showPage('search')" style="margin-left:10px">Search Customers / Cars</button>
+          </div>
+        </div>
+        <div class="right-rail" style="width:360px">
+          <div class="card section">
+            <strong>Quick Actions</strong>
+            <div style="margin-top:10px" class="small">
+              <button class="btn" onclick="showPage('add')">Add Car / Customer / Booking</button>
+            </div>
+          </div>
+          <div class="card section">
+            <strong>Notifications</strong>
+            <div id="notifications" style="margin-top:10px" class="small muted">No notifications</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        <div class="card">
+          <strong>Car Booking</strong>
+          <div class="muted" style="margin-top:8px">Create and manage bookings with hire packs, insurance and agreements.</div>
+        </div>
+        <div class="card">
+          <strong>Check-In / Out</strong>
+          <div class="muted" style="margin-top:8px">Photos and videos mandatory. Charges calculated on miles with cap per day.</div>
+        </div>
+        <div class="card">
+          <strong>Fleet Health</strong>
+          <div class="muted" style="margin-top:8px">Maintenance logs, tickets, police records and history per vehicle.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEARCH -->
+    <section id="search" class="card" style="display:none">
+      <h2>Search</h2>
+      <p class="muted">Search by booking ref, car reg or customer name</p>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <input id="searchInput" type="text" placeholder="Enter name, booking ref or car reg" />
+        <button class="btn primary" onclick="performSearch()">Search</button>
+      </div>
+      <div id="searchResults" class="results" style="margin-top:14px"></div>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="login" class="card" style="display:none">
+      <h2>Login</h2>
+      <form onsubmit="event.preventDefault();alert('Demo login — no backend')">
+        <label>Username</label>
+        <input id="loginUser" type="text" required />
+        <label>Password</label>
+        <input type="password" required />
+        <button type="submit" class="btn primary">Login</button>
+      </form>
+    </section>
+
+    <!-- CUSTOMER PROFILE -->
+    <section id="profile" class="card" style="display:none">
+      <h2>Customer Profile</h2>
+      <form id="custForm" onsubmit="saveCustomer(event)">
+        <label>Full name</label>
+        <input id="cust_name" type="text" required />
+        <label>Email</label>
+        <input id="cust_email" type="email" />
+        <label>Phone</label>
+        <input id="cust_phone" type="tel" />
+        <label>Regular customer?</label>
+        <select id="cust_regular"><option value="no">No</option><option value="yes">Yes</option></select>
+        <button class="btn primary" type="submit">Save Customer</button>
+      </form>
+      <div id="custMessage" style="margin-top:10px" class="small muted"></div>
+    </section>
+
+    <!-- BOOKING -->
+    <section id="booking" class="card" style="display:none">
+      <h2>New Booking</h2>
+      <form id="bookingForm" onsubmit="createBooking(event)">
+        <label>Booking Reference</label>
+        <input id="bk_ref" type="text" placeholder="e.g. BK-001" required />
+        <label>Customer (name)</label>
+        <input id="bk_customer" type="text" placeholder="Customer full name" required />
+        <label>Car Registration (primary key)</label>
+        <input id="bk_car" type="text" placeholder="REG-123" required />
+        <div class="row">
+          <div>
+            <label>Pickup Date</label>
+            <input id="bk_pick" type="date" required />
+          </div>
+          <div>
+            <label>Return Date</label>
+            <input id="bk_return" type="date" required />
+          </div>
+        </div>
+        <label>Hire Pack</label>
+        <select id="bk_pack"><option>Standard</option><option>Elite</option></select>
+        <label>Insurance (TCP)</label>
+        <select id="bk_ins"><option>Included</option><option>Excluded</option></select>
+        <label>Extras (comma)</label>
+        <input id="bk_extras" placeholder="GPS,Child Seat" />
+        <div style="margin-top:10px;font-size:13px;color:var(--muted)">Charges: <span id="estCharge">0</span></div>
+        <button class="btn primary" type="submit">Create Booking &amp; Send Agreement</button>
+      </form>
+    </section>
+
+    <!-- VEHICLE PROFILE -->
+    <section id="vehicle" class="card" style="display:none">
+      <h2>Vehicle Profile</h2>
+      <div style="display:flex;gap:12px">
+        <div style="flex:1">
+          <form id="vehicleForm" onsubmit="saveVehicle(event)">
+            <label>Registration (primary key)</label>
+            <input id="v_reg" required />
+            <label>Model</label>
+            <input id="v_model" />
+            <label>Category</label>
+            <select id="v_cat"><option>Standard</option><option>Elite</option><option>Budget</option></select>
+            <label>Status</label>
+            <select id="v_status"><option>Available</option><option>Rented</option><option>In Service</option></select>
+            <label>Base photo (for EOL comparison)</label>
+            <input id="v_photo" type="file" accept="image/*" onchange="compressPreview(event,'v_preview')" />
+            <div id="v_preview" style="margin-top:8px"></div>
+            <button class="btn primary" type="submit">Save Vehicle</button>
+          </form>
+        </div>
+        <div style="width:300px">
+          <div class="card">
+            <strong>Vehicle Search</strong>
+            <input id="v_search" placeholder="Search reg or model" style="margin-top:8px" oninput="searchVehicle()" />
+            <div id="v_list" style="margin-top:8px;max-height:300px;overflow:auto"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADD / ADMIN -->
+    <section id="add" class="card" style="display:none">
+      <h2>Admin — Add</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="card">
+          <strong>Add Customer</strong>
+          <form onsubmit="addCustomerAdmin(event)">
+            <label>Name</label><input id="add_c_name" required />
+            <label>Email</label><input id="add_c_email" />
+            <label>Phone</label><input id="add_c_phone" />
+            <button class="btn primary" type="submit">Add</button>
+          </form>
+        </div>
+        <div class="card">
+          <strong>Add Car</strong>
+          <form onsubmit="addCarAdmin(event)">
+            <label>Reg</label><input id="add_v_reg" required />
+            <label>Model</label><input id="add_v_model" />
+            <label>Category</label><select id="add_v_cat"><option>Standard</option><option>Elite</option></select>
+            <button class="btn primary" type="submit">Add Car</button>
+          </form>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <strong>Add Booking</strong>
+        <form onsubmit="addBookingAdmin(event)">
+          <label>Ref</label><input id="add_b_ref" required />
+          <label>Customer</label><input id="add_b_cust" required />
+          <label>Car Reg</label><input id="add_b_car" required />
+          <button class="btn primary" type="submit">Add Booking</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- CHECK-IN -->
+    <section id="checkin" class="card" style="display:none">
+      <h2>Check-In (Start Hire)</h2>
+      <p class="muted">Photos mandatory. Enter before-trip miles, tickets and extras to be recorded.</p>
+      <form id="checkInForm" onsubmit="doCheckIn(event)">
+        <label>Booking Ref</label><input id="ci_ref" required />
+        <label>Car Reg</label><input id="ci_reg" required />
+        <label>Person In Charge</label><input id="ci_person" required />
+        <label>Before Trip Miles</label><input id="ci_before_miles" type="number" min="0" required />
+        <label>Tickets (amounts comma separated)</label><input id="ci_tickets" placeholder="e.g. 50,20" />
+        <label>Other charges (parking, police, extra)</label><input id="ci_charges" placeholder="parking:10,police:0" />
+        <label>Photos (alloys, exterior, interior, mileage, overall video) — multiple images allowed</label>
+        <input id="ci_photos" type="file" accept="image/*,video/*" multiple onchange="handleCompressMultiple(event,'ci_preview')" />
+        <div id="ci_preview" class="photos-grid"></div>
+        <div style="margin-top:10px;color:var(--muted)">Tip: add at least 4 photos showing interior, exterior, alloys and mileage.</div>
+        <button class="btn primary" type="submit">Complete Check-In</button>
+      </form>
+    </section>
+
+    <!-- CHECK-OUT -->
+    <section id="checkout" class="card" style="display:none">
+      <h2>Check-Out (End Hire)</h2>
+      <p class="muted">Photos mandatory. Enter after-trip miles to calculate charges by miles with daily cap.</p>
+      <form id="checkOutForm" onsubmit="doCheckOut(event)">
+        <label>Booking Ref</label><input id="co_ref" required />
+        <label>Car Reg</label><input id="co_reg" required />
+        <label>Person In Charge</label><input id="co_person" required />
+        <label>After Trip Miles</label><input id="co_after_miles" type="number" min="0" required />
+        <label>Extra tickets/penalties to add now</label><input id="co_tickets" placeholder="e.g. 70" />
+        <label>Photos (alloys, exterior, interior, mileage, overall video)</label>
+        <input id="co_photos" type="file" accept="image/*,video/*" multiple onchange="handleCompressMultiple(event,'co_preview')" />
+        <div id="co_preview" class="photos-grid"></div>
+        <div style="margin-top:10px">Estimated mileage charge: <strong id="mcharge">0</strong></div>
+        <button class="btn primary" type="submit">Complete Check-Out &amp; Finalize</button>
+      </form>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="reports" class="card" style="display:none">
+      <h2>Reports</h2>
+      <div style="display:flex;gap:8px;align-items:center">
+        <label>Month</label>
+        <input id="rep_month" type="month" />
+        <button class="btn primary" onclick="generateReport()">Generate</button>
+        <button class="btn" onclick="exportAllCSV()">Export CSV</button>
+      </div>
+      <div id="reportOut" style="margin-top:12px"></div>
+    </section>
+
+  </main>
+
+  <footer>© <span id="year"></span> Tidy Car Hire — Pro • Notifications and CSV email-ready reports</footer>
+
+  <script>
+    // --- Utilities & storage ---
+    const LS = {cars:'tch_cars',customers:'tch_customers',bookings:'tch_bookings',checkins:'tch_checkins',notifications:'tch_notes'};
+    function load(key){return JSON.parse(localStorage.getItem(key) || '[]')}
+    function save(key,data){localStorage.setItem(key,JSON.stringify(data))}
+    function notify(msg){let n=load(LS.notifications);n.unshift({text:msg,time:Date.now()});save(LS.notifications,n);renderNotifications()}
+    function renderNotifications(){
+      const n=load(LS.notifications);
+      const el=document.getElementById('notifications');
+      if(!n.length) el.textContent='No notifications';
+      else el.innerHTML = n.slice(0,6).map(x => `<div style="margin-bottom:6px">${new Date(x.time).toLocaleString()}: ${x.text}</div>`).join('');
+    }
+
+    // --- Navigation ---
+    document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',e=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      showPage(btn.dataset.page);
+    }));
+    function showPage(id){
+      document.querySelectorAll('main section').forEach(s=>s.style.display='none');
+      const target = document.getElementById(id);
+      if (target) target.style.display='block';
+    }
+    document.getElementById('year').textContent=new Date().getFullYear();
+    renderNotifications();
+
+    // --- Vehicle functions ---
+    function saveVehicle(e){
+      e.preventDefault();
+      const cars = load(LS.cars);
+      const reg = document.getElementById('v_reg').value.trim().toUpperCase();
+      if(!reg){alert('Reg required');return}
+      if(cars.find(c=>c.reg===reg)){alert('Car already exists');return}
+      const vehicle = {
+        reg,
+        model: document.getElementById('v_model').value,
+        category: document.getElementById('v_cat').value,
+        status: document.getElementById('v_status').value,
+        photo: document.getElementById('v_preview').querySelector('img')?.src || ''
+      };
+      cars.push(vehicle);
+      save(LS.cars,cars);
+      notify('Car added: '+reg);
+      document.getElementById('v_list').innerHTML='';
+      searchVehicle();
+      e.target.reset();
+      document.getElementById('v_preview').innerHTML='';
+    }
+
+    function searchVehicle(){
+      const q = document.getElementById('v_search').value.trim().toLowerCase();
+      const cars = load(LS.cars);
+      const out = cars.filter(c=>c.reg.toLowerCase().includes(q) || (c.model||'').toLowerCase().includes(q))
+        .map(c => `<div style="padding:8px;border-bottom:1px solid #eef6ff"><strong>${c.reg}</strong><div class="muted">${c.model} • ${c.category} • ${c.status}</div></div>`).join('');
+      document.getElementById('v_list').innerHTML = out || '<div class="muted">No vehicles</div>';
+    }
+
+    // compress preview for single image
+    function compressPreview(e,id){
+      const f = e.target.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = function(ev){
+        const img = new Image();
+        img.onload = function(){
+          const canvas = document.createElement('canvas');
+          const maxW = 800;
+          const scale = Math.min(1, maxW / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          const data = canvas.toDataURL('image/jpeg',0.7);
+          document.getElementById(id).innerHTML = `<img src="${data}" style="width:100%;border-radius:8px"/>`;
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(f);
+    }
+
+    // compress multiple files and preview
+    async function handleCompressMultiple(e,id){
+      const files = Array.from(e.target.files);
+      const wrap = document.getElementById(id);
+      wrap.innerHTML = '';
+      for(const f of files){
+        if(!f.type.startsWith('image')){
+          let p = document.createElement('div');
+          p.textContent = '(video) ' + f.name;
+          wrap.appendChild(p);
+          continue;
+        }
+        const data = await fileToCompressedDataURL(f,800,0.7);
+        const img = document.createElement('img');
+        img.src = data;
+        wrap.appendChild(img);
+      }
+    }
+
+    function fileToCompressedDataURL(file,maxW=800,quality=0.7){
+      return new Promise(res=>{
+        const reader = new FileReader();
+        reader.onload = function(ev){
+          const img = new Image();
+          img.onload = function(){
+            const scale = Math.min(1, maxW / img.width);
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+            res(canvas.toDataURL('image/jpeg',quality));
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // --- Customer functions ---
+    function saveCustomer(e){
+      e.preventDefault();
+      const customers = load(LS.customers);
+      const id = Date.now().toString(36);
+      const cust = {id, name:document.getElementById('cust_name').value, email:document.getElementById('cust_email').value, phone:document.getElementById('cust_phone').value, regular:document.getElementById('cust_regular').value, due:0};
+      customers.push(cust);
+      save(LS.customers,customers);
+      document.getElementById('custMessage').textContent='Saved '+cust.name;
+      notify('Customer added: '+cust.name);
+      e.target.reset();
+    }
+
+    function addCustomerAdmin(e){
+      e.preventDefault();
+      const customers = load(LS.customers);
+      const name = document.getElementById('add_c_name').value;
+      customers.push({id:Date.now().toString(36),name,email:document.getElementById('add_c_email').value,phone:document.getElementById('add_c_phone').value,due:0});
+      save(LS.customers,customers);
+      notify('Customer added: '+name);
+      e.target.reset();
+    }
+
+    // --- Booking functions ---
+    function createBooking(e){
+      // if called from addBookingAdmin where event is submit of other form, e may not have bk_* fields — but createBooking expects current form fields
+      if(e && e.preventDefault) e.preventDefault();
+      const bookings = load(LS.bookings);
+      const ref = document.getElementById('bk_ref') ? document.getElementById('bk_ref').value.trim().toUpperCase() : (document.getElementById('add_b_ref') ? document.getElementById('add_b_ref').value.trim().toUpperCase() : '');
+      if(!ref){alert('Booking ref required');return}
+      if(bookings.find(b=>b.ref===ref)){alert('Ref exists');return}
+      const car = document.getElementById('bk_car') ? document.getElementById('bk_car').value.trim().toUpperCase() : (document.getElementById('add_b_car') ? document.getElementById('add_b_car').value.trim().toUpperCase() : '');
+      const cars = load(LS.cars);
+      if(!cars.find(c=>c.reg===car)){alert('Car reg does not exist in fleet');return}
+      const b = {
+        ref,
+        customer: document.getElementById('bk_customer') ? document.getElementById('bk_customer').value : (document.getElementById('add_b_cust') ? document.getElementById('add_b_cust').value : ''),
+        car,
+        pack: document.getElementById('bk_pack') ? document.getElementById('bk_pack').value : 'Standard',
+        insurance: document.getElementById('bk_ins') ? document.getElementById('bk_ins').value : 'Included',
+        extras: document.getElementById('bk_extras') ? document.getElementById('bk_extras').value : '',
+        pick: document.getElementById('bk_pick') ? document.getElementById('bk_pick').value : new Date().toISOString().slice(0,10),
+        ret: document.getElementById('bk_return') ? document.getElementById('bk_return').value : new Date(Date.now()+24*3600*1000).toISOString().slice(0,10),
+        status:'Booked'
+      };
+      bookings.push(b);
+      save(LS.bookings,bookings);
+      notify('Booking created: '+ref);
+      alert('Booking created and agreement (simulated) sent by email');
+      if(document.getElementById('bookingForm')) document.getElementById('bookingForm').reset();
+      if(document.getElementById('add_b_ref')) { document.getElementById('add_b_ref').value=''; document.getElementById('add_b_cust').value=''; document.getElementById('add_b_car').value=''; }
+    }
+
+    function addBookingAdmin(e){
+      e.preventDefault();
+      // call createBooking which reads fields from add_ inputs
+      createBooking(e);
+    }
+
+    // --- Check-in/out rules & flows ---
+    function doCheckIn(e){
+      e.preventDefault();
+      const ref = document.getElementById('ci_ref').value.trim().toUpperCase();
+      const bookings = load(LS.bookings);
+      const b = bookings.find(x=>x.ref===ref);
+      if(!b){alert('Booking not found');return}
+      const reg = document.getElementById('ci_reg').value.trim().toUpperCase();
+      if(reg!==b.car){ if(!confirm('Car reg does not match booking. Continue?')) return }
+      const before = parseInt(document.getElementById('ci_before_miles').value||0,10);
+      const tickets = document.getElementById('ci_tickets').value;
+      const charges = document.getElementById('ci_charges').value;
+      const photos = [];
+      document.querySelectorAll('#ci_preview img').forEach(img=>photos.push(img.src));
+      if(photos.length < 3){ alert('At least 3 photos required'); return }
+      const checkins = load(LS.checkins);
+      checkins.push({ref,reg,person:document.getElementById('ci_person').value,before,tickets,charges,photos,ts:Date.now()});
+      save(LS.checkins,checkins);
+      b.status='On Hire';
+      save(LS.bookings,bookings);
+      notify('Check-in completed: '+ref);
+      alert('Check-in saved');
+      document.getElementById('checkInForm').reset();
+      document.getElementById('ci_preview').innerHTML='';
+    }
+
+    function doCheckOut(e){
+      e.preventDefault();
+      const ref = document.getElementById('co_ref').value.trim().toUpperCase();
+      const bookings = load(LS.bookings);
+      const b = bookings.find(x=>x.ref===ref);
+      if(!b){alert('Booking not found');return}
+      const reg = document.getElementById('co_reg').value.trim().toUpperCase();
+      if(reg!==b.car){ if(!confirm('Car reg does not match booking. Continue?')) return }
+      const checkins = load(LS.checkins);
+      const ci = checkins.find(c=>c.ref===ref);
+      if(!ci){ if(!confirm('No check-in found for this booking. Continue?')){} }
+      const after = parseInt(document.getElementById('co_after_miles').value||0,10);
+      const before = ci ? ci.before : 0;
+      const days = calcDays(b.pick,b.ret);
+      const milesUsed = Math.max(0, after-before);
+      const perMile = 0.5;
+      const capPerDay = 100;
+      const cappedMiles = Math.min(milesUsed, capPerDay*days);
+      const mcharge = (cappedMiles*perMile).toFixed(2);
+      document.getElementById('mcharge').textContent = mcharge;
+      const photos = [];
+      document.querySelectorAll('#co_preview img').forEach(img=>photos.push(img.src));
+      if(photos.length < 3){ alert('At least 3 photos required'); return }
+      const extraTickets = (document.getElementById('co_tickets').value||'');
+      const customers = load(LS.customers);
+      const cust = customers.find(c=>c.name===b.customer);
+      if(cust){
+        cust.due = (cust.due||0) + parseFloat(mcharge) + sumFromCSV(ci ? ci.tickets : '') + sumFromCSV(extraTickets);
+        save(LS.customers,customers);
+      }
+      b.status='Completed';
+      b.finalMiles=after;
+      b.finalPhotos=photos;
+      b.extraTickets=extraTickets;
+      save(LS.bookings,bookings);
+      notify('Check-out completed: '+ref+' • Charge £'+mcharge);
+      alert('Check-out completed. Fleet status will be updated after verification.');
+      document.getElementById('checkOutForm').reset();
+      document.getElementById('co_preview').innerHTML='';
+      document.getElementById('mcharge').textContent='0';
+    }
+
+    function sumFromCSV(s){ if(!s) return 0; return s.split(',').map(x=>parseFloat(x)||0).reduce((a,b)=>a+b,0) }
+    function calcDays(a,b){
+      try{
+        const d1 = new Date(a);
+        const d2 = new Date(b);
+        const diff = Math.max(1, Math.ceil((d2-d1)/(1000*60*60*24)));
+        return diff;
+      } catch(e){ return 1 }
+    }
+
+    // --- Reports & CSV ---
+    function generateReport(){
+      const month = document.getElementById('rep_month').value;
+      if(!month){ alert('Select month'); return }
+      const year = month.split('-')[0];
+      const mon = month.split('-')[1];
+      const bookings = load(LS.bookings);
+      const filtered = bookings.filter(b=>{
+        if(!b.pick) return false;
+        const d = new Date(b.pick);
+        return d.getFullYear()==year && (d.getMonth()+1)==parseInt(mon);
+      });
+      const out = `<h3>Report for ${month}</h3><div>${filtered.length} bookings</div><div style="margin-top:8px">${filtered.map(f=>`<div style="padding:8px;border-bottom:1px solid #eef6ff"><strong>${f.ref}</strong> • ${f.customer} • <span class="muted">${f.car}</span> • ${f.status}</div>`).join('')}</div>`;
+      document.getElementById('reportOut').innerHTML = out;
+    }
+
+    function exportAllCSV(){
+      const cars = load(LS.cars), customers = load(LS.customers), bookings = load(LS.bookings);
+      const csvify = (arr,fields)=>{
+        const hdr = fields.join(',');
+        const rows = arr.map(o=>fields.map(f=>`"${(o[f]||'').toString().replace(/"/g,'""')}"`).join(','));
+        return [hdr].concat(rows).join('\n');
+      };
+      downloadFile('cars.csv',csvify(cars,['reg','model','category','status']));
+      downloadFile('customers.csv',csvify(customers,['id','name','email','phone','due']));
+      downloadFile('bookings.csv',csvify(bookings,['ref','customer','car','pick','ret','status']));
+      notify('CSV export ready');
+    }
+
+    function downloadFile(name,content){
+      const a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(content);
+      a.download = name;
+      a.click();
+    }
+
+    // --- small helpers for admin add/save ---
+    function addCarAdmin(e){
+      e.preventDefault();
+      const reg = document.getElementById('add_v_reg').value.trim().toUpperCase();
+      const cars = load(LS.cars);
+      cars.push({reg,model:document.getElementById('add_v_model').value,category:document.getElementById('add_v_cat').value,status:'Available'});
+      save(LS.cars,cars);
+      notify('Car added: '+reg);
+      e.target.reset();
+      searchVehicle();
+    }
+
+    // (addBookingAdmin defined earlier and calls createBooking)
+
+    // --- Search implementation ---
+    function performSearch(){
+      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const bookings = load(LS.bookings);
+      const cars = load(LS.cars);
+      const customers = load(LS.customers);
+      const res = bookings.filter(b=> (b.ref||'').toLowerCase().includes(q) || (b.customer||'').toLowerCase().includes(q) || (b.car||'').toLowerCase().includes(q) );
+      const el = document.getElementById('searchResults');
+      if(!res.length){ el.innerHTML = '<div class="muted">No results.</div>'; return }
+      el.innerHTML = res.map(r=>`<div class="item"><strong>${r.ref}</strong> • ${r.customer} • <span class="muted">${r.car}</span><div class="small">Status: ${r.status}</div></div>`).join('');
+    }
+
+    // --- Misc ---
+    function doDVLA(checkReg){ // simulated DVLA check (askmid)
+      return {ok:true,notes:'Simulated DVLA check for '+checkReg}
+    }
+
+    // Init demo data
+    (function initDemo(){
+      if(!localStorage.getItem(LS.cars)){
+        save(LS.cars,[
+          {reg:'REG-001',model:'Toyota Corolla',category:'Standard',status:'Available'},
+          {reg:'ELT-100',model:'BMW 5 Series',category:'Elite',status:'Available'}
+        ]);
+      }
+      if(!localStorage.getItem(LS.customers)){
+        save(LS.customers,[{id:'c1',name:'John Smith',email:'john@example.com',phone:'5551234567',due:0}]);
+      }
+      if(!localStorage.getItem(LS.bookings)){
+        save(LS.bookings,[{ref:'BK001',customer:'John Smith',car:'REG-001',pick:new Date().toISOString().slice(0,10),ret:new Date(Date.now()+2*24*3600*1000).toISOString().slice(0,10),status:'Booked'}]);
+      }
+      searchVehicle();
+      renderNotifications();
+    })();
+  </script>
+</body>
+</html>
